@@ -8,6 +8,11 @@ namespace Testlets.Core.Models
     public class Testlet
     {
         /// <summary>
+        /// The unique testlet identifier.
+        /// </summary>
+        public string TestletId { get; }
+
+        /// <summary>
         /// Initialize a new instance of testlet.
         /// </summary>
         /// <param name="testletId">The unique testlet identifier. Can be <value>NULL</value> or empty.</param>
