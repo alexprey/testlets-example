@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Testlets.Core.Models
 {
@@ -12,6 +14,11 @@ namespace Testlets.Core.Models
         /// </summary>
         public string TestletId { get; }
 
+        private ICollection<TestletItem> _items;
+
+        private ICollection<TestletItem> _pretestItems;
+        private ICollection<TestletItem> _otherItems;
+
         /// <summary>
         /// Initialize a new instance of testlet.
         /// </summary>
@@ -22,7 +29,31 @@ namespace Testlets.Core.Models
         /// <exception cref="System.ArgumentException">Throws when items collection is empty.</exception>
         public Testlet(string testletId, ICollection<TestletItem> items)
         {
-            // TODO
+            if (string.IsNullOrWhiteSpace(testletId))
+            {
+                throw new ArgumentNullException(nameof(testletId), "The identifier should be a non empty string.");
+            }
+
+            if (items == null)
+            {
+                throw new ArgumentNullException(nameof(items));
+            }
+
+            if (items.Count == 0)
+            {
+                throw new ArgumentException("Collection should have at least one item.", nameof(items));
+            }
+
+            TestletId = testletId;
+            
+            _items = items;
+            _pretestItems = items
+                .Where(item => item.ItemType == TestletItemType.Pretest)
+                .ToList();
+
+            _otherItems = items
+                .Where(item => item.ItemType != TestletItemType.Pretest)
+                .ToList();
         }
 
         /// <summary>
@@ -31,8 +62,37 @@ namespace Testlets.Core.Models
         /// <returns>Randomized collection of testlet items.</returns>
         public ICollection<TestletItem> Randomize()
         {
-            // TODO
-            return null;
+            var result = new List<TestletItem>(_items.Count);
+
+            var random = new Random((int)DateTime.Now.Ticks);
+
+            var leastPretestItems = new List<TestletItem>(_pretestItems);
+            result.AddRange(TakeRandomItemsFromCollection(random, 2, leastPretestItems));
+
+            var leastItems = new List<TestletItem>(leastPretestItems.Count + _otherItems.Count);
+            leastItems.AddRange(leastPretestItems);
+            leastItems.AddRange(_otherItems);
+
+            result.AddRange(TakeRandomItemsFromCollection(random, leastItems));
+
+            return result;
+        }
+
+        private static IEnumerable<TestletItem> TakeRandomItemsFromCollection(Random random, List<TestletItem> items)
+        {
+            return TakeRandomItemsFromCollection(random, items.Count, items);
+        }
+
+        private static IEnumerable<TestletItem> TakeRandomItemsFromCollection(Random random, int count, List<TestletItem> items)
+        {
+            for (int step = 0; step < count; step++)
+            {
+                var itemIndex = random.Next(0, items.Count);
+                var itemToReturn = items[itemIndex];
+                items.RemoveAt(itemIndex);
+
+                yield return itemToReturn;
+            }
         }
     }
 }
