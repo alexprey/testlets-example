@@ -84,7 +84,22 @@ namespace Testlets.Core.UnitTests.Models
         }
 
         [Test]
-        public void Randomize_ShouldReturnNewCollectionWithFirst2ItemsAsPretest()
+        public void Randomize_WhenOnlyOnePretestItem_ShouldReturnCorrectResultCollection()
+        {
+            var initialItems = new List<TestletItem>
+            {
+                new TestletItem {ItemId = "item-pretest-1", ItemType = TestletItemType.Pretest}
+            };
+
+            var target = new Testlet(ValidTestletId, 1, initialItems);
+
+            var result = target.Randomize();
+
+            result.Should().BeEquivalentTo(initialItems);
+        }
+
+        [Test]
+        public void Randomize_ShouldReturnNewCollectionWithFirstItemsAsPretest()
         {
             var target = new Testlet(ValidTestletId, ValidInitialPretestItemsCount, ValidTestletItemsCollection);
 
