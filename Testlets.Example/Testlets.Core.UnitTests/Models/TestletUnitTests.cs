@@ -31,7 +31,7 @@ namespace Testlets.Core.UnitTests.Models
         [TestCase("")]
         [TestCase("  ")]
         [TestCase(null)]
-        public void Construct_TestletIdEmpty_ShouldThrowException(string wrongTestletId)
+        public void Construct_WhenTestletIdEmpty_ShouldThrowException(string wrongTestletId)
         {
             Action act = () => new Testlet(wrongTestletId, ValidInitialPretestItemsCount, ValidTestletItemsCollection);
 
@@ -40,7 +40,7 @@ namespace Testlets.Core.UnitTests.Models
         }
 
         [Test]
-        public void Construct_ItemsCollectionIsNull_ShouldThrowException()
+        public void Construct_WhenItemsCollectionIsNull_ShouldThrowException()
         {
             Action act = () => new Testlet(ValidTestletId, ValidInitialPretestItemsCount, null);
 
@@ -99,7 +99,7 @@ namespace Testlets.Core.UnitTests.Models
         }
 
         [Test]
-        public void Randomize_ShouldReturnNewCollectionWithFirstItemsAsPretest()
+        public void Randomize_WhenValidParametersUsed_ShouldReturnNewCollectionWithFirstItemsAsPretest()
         {
             var target = new Testlet(ValidTestletId, ValidInitialPretestItemsCount, ValidTestletItemsCollection);
 
@@ -119,7 +119,7 @@ namespace Testlets.Core.UnitTests.Models
         }
 
         [Test]
-        public void Randomize_ShouldReturnNewRandomizedCollection()
+        public void Randomize_WhenValidParametersUsed_ShouldReturnNewRandomizedCollection()
         {
             var target = new Testlet(ValidTestletId, ValidInitialPretestItemsCount, ValidTestletItemsCollection);
 
